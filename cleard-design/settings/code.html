@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>clear'd - Settings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#1c1b1a",
+                      "surface-variant": "#e4e2e1",
+                      "secondary-container": "#dcdddc",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed": "#e6e2df",
+                      "surface-container-highest": "#e4e2e1",
+                      "tertiary": "#000000",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#5f6161",
+                      "surface-container-low": "#f5f3f2",
+                      "secondary": "#5d5f5e",
+                      "inverse-surface": "#303030",
+                      "surface-bright": "#fbf9f7",
+                      "on-background": "#1b1c1b",
+                      "on-tertiary-fixed-variant": "#484645",
+                      "secondary-fixed-dim": "#c6c7c6",
+                      "on-primary-container": "#858383",
+                      "tertiary-fixed-dim": "#cac6c4",
+                      "primary-container": "#1c1b1b",
+                      "surface-container-high": "#e9e8e6",
+                      "on-primary-fixed": "#1c1b1b",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#f2f0ef",
+                      "tertiary-container": "#1c1b1a",
+                      "background": "#fbf9f7",
+                      "error-container": "#ffdad6",
+                      "outline": "#747878",
+                      "surface-dim": "#dbdad8",
+                      "surface": "#fbf9f7",
+                      "secondary-fixed": "#e2e2e2",
+                      "on-primary-fixed-variant": "#474746",
+                      "on-secondary": "#ffffff",
+                      "on-surface": "#1b1c1b",
+                      "surface-tint": "#5f5e5e",
+                      "inverse-primary": "#c8c6c5",
+                      "primary-fixed": "#e5e2e1",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-container": "#868382",
+                      "surface-container": "#efedec",
+                      "primary-fixed-dim": "#c8c6c5",
+                      "on-surface-variant": "#444748",
+                      "outline-variant": "#c4c7c7",
+                      "on-secondary-fixed": "#1a1c1c",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#454747",
+                      "primary": "#000000"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-margin": "20px",
+                      "gutter": "16px",
+                      "section-gap": "32px",
+                      "stack-gap": "12px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Newsreader"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "title-md": [
+                              "Inter"
+                      ],
+                      "amount-display": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Newsreader"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-serif": [
+                              "Newsreader"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-md": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "amount-display": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-serif": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24
+        }
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Hide scrollbar for clean look */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .setting-card {
+            border: 1px solid theme('colors.surface-variant');
+            background-color: theme('colors.surface-container-lowest');
+        }
+      </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:items-center">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-container-margin py-unit h-16 bg-background dark:bg-background border-b border-outline-variant dark:border-outline md:max-w-[768px] md:border-x">
+<button class="w-10 h-10 flex items-center justify-center text-primary dark:text-on-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:opacity-70 rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="font-display-serif text-display-serif italic text-primary dark:text-on-primary-fixed">clear'd</div>
+<button class="w-10 h-10 flex items-center justify-center text-primary dark:text-on-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:opacity-70 rounded-full">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full md:max-w-[768px] px-container-margin py-section-gap pb-32 md:border-x border-outline-variant dark:border-outline bg-surface-bright">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-section-gap">Settings</h1>
+<div class="flex flex-col gap-section-gap">
+<!-- Appearance Section -->
+<section class="flex flex-col gap-stack-gap">
+<h2 class="font-label-caps text-label-caps text-secondary uppercase">Appearance</h2>
+<div class="setting-card rounded-lg overflow-hidden flex divide-x divide-surface-variant">
+<button class="flex-1 py-3 px-4 font-body-sm text-body-sm text-center bg-surface-container-low text-primary font-medium transition-colors">
+                        System
+                    </button>
+<button class="flex-1 py-3 px-4 font-body-sm text-body-sm text-center text-secondary hover:bg-surface-container-low transition-colors">
+                        Light
+                    </button>
+<button class="flex-1 py-3 px-4 font-body-sm text-body-sm text-center text-secondary hover:bg-surface-container-low transition-colors">
+                        Dark
+                    </button>
+</div>
+</section>
+<!-- Payment Section -->
+<section class="flex flex-col gap-stack-gap">
+<h2 class="font-label-caps text-label-caps text-secondary uppercase">Payment</h2>
+<div class="setting-card rounded-lg overflow-hidden divide-y divide-surface-variant flex flex-col">
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="font-body-lg text-body-lg">Preferred payment day</span>
+<div class="flex items-center gap-2 text-secondary">
+<span class="font-body-sm text-body-sm">Last working day</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</div>
+</div>
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="font-body-lg text-body-lg">Currency</span>
+<div class="flex items-center gap-2 text-secondary">
+<span class="font-body-sm text-body-sm">SGD</span>
+<span class="material-symbols-outlined text-sm">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Notifications Section -->
+<section class="flex flex-col gap-stack-gap">
+<h2 class="font-label-caps text-label-caps text-secondary uppercase">Notifications</h2>
+<div class="setting-card rounded-lg overflow-hidden divide-y divide-surface-variant flex flex-col">
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="font-body-lg text-body-lg">Monthly reminders</span>
+<div class="w-10 h-6 bg-primary rounded-full relative cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full absolute top-1 right-1"></div>
+</div>
+</div>
+<div class="p-4 flex justify-between items-center hover:bg-surface-container-low transition-colors cursor-pointer">
+<span class="font-body-lg text-body-lg">Completion notifications</span>
+<div class="w-10 h-6 bg-primary rounded-full relative cursor-pointer">
+<div class="w-4 h-4 bg-white rounded-full absolute top-1 right-1"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Section -->
+<section class="flex flex-col gap-stack-gap">
+<h2 class="font-label-caps text-label-caps text-secondary uppercase">AI Integration</h2>
+<div class="setting-card rounded-lg overflow-hidden divide-y divide-surface-variant flex flex-col p-4 gap-4">
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-secondary uppercase">OpenAI API Key</label>
+<input class="w-full bg-surface-container-low border-none rounded font-mono text-sm py-2 px-3 text-secondary focus:ring-1 focus:ring-primary focus:outline-none" readonly="" type="password" value="sk-xxxxxxxxxxxxxxxxxxxxxxxx"/>
+</div>
+<div class="pt-4 flex justify-between items-center">
+<span class="font-body-lg text-body-lg">Connection status</span>
+<div class="flex items-center gap-1 text-green-700 bg-green-50 px-2 py-1 rounded font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                            Connected
+                        </div>
+</div>
+</div>
+</section>
+<!-- Data Section -->
+<section class="flex flex-col gap-stack-gap">
+<h2 class="font-label-caps text-label-caps text-secondary uppercase">Data Management</h2>
+<div class="setting-card rounded-lg overflow-hidden flex flex-col divide-y divide-surface-variant">
+<button class="p-4 flex items-center gap-3 hover:bg-surface-container-low transition-colors text-left w-full">
+<span class="material-symbols-outlined text-secondary">download</span>
+<span class="font-body-lg text-body-lg">Export Data</span>
+</button>
+<button class="p-4 flex items-center gap-3 hover:bg-surface-container-low transition-colors text-left w-full">
+<span class="material-symbols-outlined text-secondary">backup</span>
+<span class="font-body-lg text-body-lg">Backup</span>
+</button>
+<button class="p-4 flex items-center gap-3 hover:bg-surface-container-low transition-colors text-left w-full">
+<span class="material-symbols-outlined text-secondary">restore</span>
+<span class="font-body-lg text-body-lg">Restore</span>
+</button>
+</div>
+</section>
+<!-- About Section -->
+<section class="mt-section-gap flex flex-col items-center text-center gap-2 opacity-60">
+<div class="font-display-serif text-display-serif italic text-primary">clear'd</div>
+<p class="font-body-sm text-body-sm text-secondary">Every month. clear'd.</p>
+<p class="font-label-caps text-label-caps text-outline mt-4">VERSION 1.0.4</p>
+</section>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-background dark:bg-background px-4 pb-safe h-20 border-t border-outline-variant dark:border-outline">
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim pt-2 hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim pt-2 hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="list_alt">list_alt</span>
+<span class="font-label-caps text-label-caps">Obligations</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim pt-2 hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="history">history</span>
+<span class="font-label-caps text-label-caps">History</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary dark:text-on-primary-fixed font-bold border-t-2 border-primary dark:border-on-primary-fixed pt-2 hover:text-primary dark:hover:text-on-primary-fixed transition-colors active:scale-95 duration-150">
+<span class="material-symbols-outlined mb-1" data-icon="settings" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</button>
+</nav>
+</body></html>

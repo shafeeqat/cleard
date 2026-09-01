@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Master Obligations List</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-tertiary-fixed": "#1c1b1a",
+                        "surface-variant": "#e4e2e1",
+                        "secondary-container": "#dcdddc",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#e6e2df",
+                        "surface-container-highest": "#e4e2e1",
+                        "tertiary": "#000000",
+                        "error": "#ba1a1a",
+                        "on-secondary-container": "#5f6161",
+                        "surface-container-low": "#f5f3f2",
+                        "secondary": "#5d5f5e",
+                        "inverse-surface": "#303030",
+                        "surface-bright": "#fbf9f7",
+                        "on-background": "#1b1c1b",
+                        "on-tertiary-fixed-variant": "#484645",
+                        "secondary-fixed-dim": "#c6c7c6",
+                        "on-primary-container": "#858383",
+                        "tertiary-fixed-dim": "#cac6c4",
+                        "primary-container": "#1c1b1b",
+                        "surface-container-high": "#e9e8e6",
+                        "on-primary-fixed": "#1c1b1b",
+                        "on-error-container": "#93000a",
+                        "inverse-on-surface": "#f2f0ef",
+                        "tertiary-container": "#1c1b1a",
+                        "background": "#fbf9f7",
+                        "error-container": "#ffdad6",
+                        "outline": "#747878",
+                        "surface-dim": "#dbdad8",
+                        "surface": "#fbf9f7",
+                        "secondary-fixed": "#e2e2e2",
+                        "on-primary-fixed-variant": "#474746",
+                        "on-secondary": "#ffffff",
+                        "on-surface": "#1b1c1b",
+                        "surface-tint": "#5f5e5e",
+                        "inverse-primary": "#c8c6c5",
+                        "primary-fixed": "#e5e2e1",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-container": "#868382",
+                        "surface-container": "#efedec",
+                        "primary-fixed-dim": "#c8c6c5",
+                        "on-surface-variant": "#444748",
+                        "outline-variant": "#c4c7c7",
+                        "on-secondary-fixed": "#1a1c1c",
+                        "on-primary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#454747",
+                        "primary": "#000000"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "container-margin": "20px",
+                        "gutter": "16px",
+                        "section-gap": "32px",
+                        "stack-gap": "12px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Inter"],
+                        "headline-lg-mobile": ["Newsreader"],
+                        "body-sm": ["Inter"],
+                        "title-md": ["Inter"],
+                        "amount-display": ["Inter"],
+                        "headline-lg": ["Newsreader"],
+                        "body-lg": ["Inter"],
+                        "display-serif": ["Newsreader"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["28px", { "lineHeight": "34px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "title-md": ["18px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "amount-display": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "500" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "display-serif": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="docked full-width top-0 border-b border-outline-variant bg-background w-full z-40 hidden md:flex">
+<div class="flex justify-between items-center w-full px-container-margin py-unit h-16 max-w-[768px] mx-auto">
+<button class="text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-70 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-display-serif text-display-serif italic text-primary">clear'd</h1>
+<button class="text-primary hover:bg-surface-container-low transition-colors p-2 rounded-full active:opacity-70 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-[768px] mx-auto px-container-margin py-section-gap pb-24 md:pb-section-gap">
+<div class="mb-section-gap">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary mb-2">Obligations</h2>
+<p class="font-body-lg text-body-lg text-secondary">Manage your recurring financial commitments.</p>
+</div>
+<!-- Loans & credit Group -->
+<section class="mb-section-gap">
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-widest mb-stack-gap border-b border-outline-variant pb-2">Loans &amp; credit</h3>
+<div class="flex flex-col gap-unit">
+<!-- Citibank -->
+<div class="flex justify-between items-center py-stack-gap border-b border-surface-variant last:border-b-0 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col gap-1">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Citibank</span>
+<span class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 3 payments left
+                        </span>
+</div>
+<div class="font-amount-display text-amount-display text-primary text-right">
+                        $644
+                    </div>
+</div>
+<!-- Personal Loan -->
+<div class="flex justify-between items-center py-stack-gap border-b border-surface-variant last:border-b-0 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col gap-1">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Personal Loan</span>
+<span class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 12 payments left
+                        </span>
+</div>
+<div class="font-amount-display text-amount-display text-primary text-right">
+                        $500
+                    </div>
+</div>
+</div>
+</section>
+<!-- Household Group -->
+<section class="mb-section-gap">
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-widest mb-stack-gap border-b border-outline-variant pb-2">Household</h3>
+<div class="flex flex-col gap-unit">
+<!-- SP Services -->
+<div class="flex justify-between items-center py-stack-gap border-b border-surface-variant last:border-b-0 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col gap-1">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">SP Services</span>
+<span class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">all_inclusive</span> Ongoing
+                        </span>
+</div>
+<div class="font-amount-display text-amount-display text-primary text-right">
+                        Variable
+                    </div>
+</div>
+<!-- Conservancy -->
+<div class="flex justify-between items-center py-stack-gap border-b border-surface-variant last:border-b-0 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col gap-1">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Conservancy</span>
+<span class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">all_inclusive</span> Ongoing
+                        </span>
+</div>
+<div class="font-amount-display text-amount-display text-primary text-right">
+                        $52.10
+                    </div>
+</div>
+</div>
+</section>
+<!-- GIRO Group -->
+<section class="mb-section-gap">
+<h3 class="font-label-caps text-label-caps text-secondary uppercase tracking-widest mb-stack-gap border-b border-outline-variant pb-2">GIRO</h3>
+<div class="flex flex-col gap-unit">
+<!-- Manulife -->
+<div class="flex justify-between items-center py-stack-gap border-b border-surface-variant last:border-b-0 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col gap-1">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">Manulife</span>
+<span class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">all_inclusive</span> Ongoing
+                        </span>
+</div>
+<div class="font-amount-display text-amount-display text-primary text-right">
+                        $126.20
+                    </div>
+</div>
+<!-- IRAS -->
+<div class="flex justify-between items-center py-stack-gap border-b border-surface-variant last:border-b-0 hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col gap-1">
+<span class="font-title-md text-title-md text-on-surface group-hover:text-primary transition-colors">IRAS</span>
+<span class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> 8 payments left
+                        </span>
+</div>
+<div class="font-amount-display text-amount-display text-primary text-right">
+                        $125.63
+                    </div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-background px-4 pb-safe h-20 border-t border-outline-variant md:hidden">
+<button class="flex flex-col items-center justify-center text-secondary pt-2 hover:text-primary transition-colors active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center text-primary font-bold border-t-2 border-primary pt-2 hover:text-primary transition-colors active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="list_alt" style="font-variation-settings: 'FILL' 1;">list_alt</span>
+<span class="font-label-caps text-label-caps mt-1">Obligations</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary pt-2 hover:text-primary transition-colors active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-caps text-label-caps mt-1">History</span>
+</button>
+<button class="flex flex-col items-center justify-center text-secondary pt-2 hover:text-primary transition-colors active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-label-caps mt-1">Settings</span>
+</button>
+</nav>
+</body></html>

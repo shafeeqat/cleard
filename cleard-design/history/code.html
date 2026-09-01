@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>clear'd - History</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Newsreader:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary-fixed": "#1c1b1a",
+                      "surface-variant": "#e4e2e1",
+                      "secondary-container": "#dcdddc",
+                      "on-tertiary": "#ffffff",
+                      "tertiary-fixed": "#e6e2df",
+                      "surface-container-highest": "#e4e2e1",
+                      "tertiary": "#000000",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#5f6161",
+                      "surface-container-low": "#f5f3f2",
+                      "secondary": "#5d5f5e",
+                      "inverse-surface": "#303030",
+                      "surface-bright": "#fbf9f7",
+                      "on-background": "#1b1c1b",
+                      "on-tertiary-fixed-variant": "#484645",
+                      "secondary-fixed-dim": "#c6c7c6",
+                      "on-primary-container": "#858383",
+                      "tertiary-fixed-dim": "#cac6c4",
+                      "primary-container": "#1c1b1b",
+                      "surface-container-high": "#e9e8e6",
+                      "on-primary-fixed": "#1c1b1b",
+                      "on-error-container": "#93000a",
+                      "inverse-on-surface": "#f2f0ef",
+                      "tertiary-container": "#1c1b1a",
+                      "background": "#fbf9f7",
+                      "error-container": "#ffdad6",
+                      "outline": "#747878",
+                      "surface-dim": "#dbdad8",
+                      "surface": "#fbf9f7",
+                      "secondary-fixed": "#e2e2e2",
+                      "on-primary-fixed-variant": "#474746",
+                      "on-secondary": "#ffffff",
+                      "on-surface": "#1b1c1b",
+                      "surface-tint": "#5f5e5e",
+                      "inverse-primary": "#c8c6c5",
+                      "primary-fixed": "#e5e2e1",
+                      "surface-container-lowest": "#ffffff",
+                      "on-tertiary-container": "#868382",
+                      "surface-container": "#efedec",
+                      "primary-fixed-dim": "#c8c6c5",
+                      "on-surface-variant": "#444748",
+                      "outline-variant": "#c4c7c7",
+                      "on-secondary-fixed": "#1a1c1c",
+                      "on-primary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "on-secondary-fixed-variant": "#454747",
+                      "primary": "#000000"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-margin": "20px",
+                      "gutter": "16px",
+                      "section-gap": "32px",
+                      "stack-gap": "12px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "label-caps": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Newsreader"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "title-md": [
+                              "Inter"
+                      ],
+                      "amount-display": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Newsreader"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-serif": [
+                              "Newsreader"
+                      ]
+              },
+              "fontSize": {
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "28px",
+                              {
+                                      "lineHeight": "34px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "title-md": [
+                              "18px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "amount-display": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-serif": [
+                              "40px",
+                              {
+                                      "lineHeight": "48px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col items-center">
+<!-- Top App Bar -->
+<header class="flex justify-between items-center w-full px-container-margin py-unit h-16 border-b border-outline-variant bg-background sticky top-0 z-40 max-w-[768px] mx-auto">
+<button class="text-primary hover:bg-surface-container-low active:opacity-70 transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-display-serif text-display-serif italic text-primary">clear'd</h1>
+<button class="text-primary hover:bg-surface-container-low active:opacity-70 transition-colors p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Main Canvas -->
+<main class="w-full max-w-[768px] px-container-margin py-section-gap flex-1 pb-32">
+<header class="mb-section-gap">
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary">History</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-unit">Archival records of obligations.</p>
+</header>
+<section class="flex flex-col gap-unit">
+<!-- Record: September -->
+<article class="flex flex-col border border-outline-variant rounded-DEFAULT p-gutter bg-surface-container-lowest hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-stack-gap">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">September</h3>
+<p class="font-body-sm text-body-sm text-secondary">14 / 14 Obligations</p>
+</div>
+<div class="text-right">
+<span class="font-amount-display text-amount-display text-on-surface block">$2,997.42</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center gap-1 bg-surface-container-highest text-on-surface px-2 py-1 rounded-[2px]">
+<span class="material-symbols-outlined text-[16px]">check</span>
+<span class="font-label-caps text-label-caps">clear'd</span>
+</div>
+</div>
+</article>
+<!-- Record: August -->
+<article class="flex flex-col border border-outline-variant rounded-DEFAULT p-gutter bg-surface-container-lowest hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-stack-gap">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">August</h3>
+<p class="font-body-sm text-body-sm text-secondary">14 / 14 Obligations</p>
+</div>
+<div class="text-right">
+<span class="font-amount-display text-amount-display text-on-surface block">$2,851.20</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center gap-1 bg-surface-container-highest text-on-surface px-2 py-1 rounded-[2px]">
+<span class="material-symbols-outlined text-[16px]">check</span>
+<span class="font-label-caps text-label-caps">clear'd</span>
+</div>
+</div>
+</article>
+<!-- Record: July -->
+<article class="flex flex-col border border-outline-variant rounded-DEFAULT p-gutter bg-surface-container-lowest hover:bg-surface-container-low transition-colors">
+<div class="flex justify-between items-start mb-stack-gap">
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">July</h3>
+<p class="font-body-sm text-body-sm text-secondary">13 / 14 Obligations</p>
+</div>
+<div class="text-right">
+<span class="font-amount-display text-amount-display text-on-surface block">$2,932.10</span>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center gap-1 bg-error-container text-on-error-container px-2 py-1 rounded-[2px]">
+<span class="material-symbols-outlined text-[16px]">close</span>
+<span class="font-label-caps text-label-caps">Not clear'd</span>
+</div>
+</div>
+</article>
+</section>
+</main>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center bg-background px-4 pb-safe h-20 border-t border-outline-variant max-w-[768px] mx-auto md:hidden">
+<a class="flex flex-col items-center justify-center text-secondary pt-2 hover:text-primary transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary pt-2 hover:text-primary transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label-caps text-label-caps mt-1">Obligations</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary font-bold border-t-2 border-primary pt-2 hover:text-primary transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps mt-1">History</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary pt-2 hover:text-primary transition-colors active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps mt-1">Settings</span>
+</a>
+</nav>
+<!-- Desktop Side Nav Overlay for responsive, placeholder -->
+<nav class="hidden md:flex flex-col fixed left-0 top-16 bottom-0 w-64 border-r border-outline-variant bg-background p-container-margin z-30">
+<div class="flex flex-col gap-4">
+<a class="flex items-center gap-3 text-secondary hover:text-primary p-2 rounded hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-caps text-label-caps">Home</span>
+</a>
+<a class="flex items-center gap-3 text-secondary hover:text-primary p-2 rounded hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label-caps text-label-caps">Obligations</span>
+</a>
+<a class="flex items-center gap-3 text-primary font-bold bg-surface-container p-2 rounded border-l-2 border-primary transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">History</span>
+</a>
+<a class="flex items-center gap-3 text-secondary hover:text-primary p-2 rounded hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps">Settings</span>
+</a>
+</div>
+</nav>
+</body></html>
