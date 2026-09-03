@@ -6,6 +6,7 @@
 
 import { isActiveForGeneration } from './obligations.js';
 import { snapshotInstanceFromObligation, instanceId, isCleared } from './monthlyInstances.js';
+import { addMonths } from '../utils/dates.js';
 
 // Counts, per obligationId, how many of that obligation's instances (across
 // all months) have status 'paid'. This is the single source of truth for
@@ -49,16 +50,12 @@ export function buildInstancesForPlan(toCreate, targetMonth, settingsDefaults = 
   return toCreate.map((obligation) => snapshotInstanceFromObligation(obligation, targetMonth, settingsDefaults, now));
 }
 
-// Firestore-facing wrapper. `db` is expected to be a Firestore-like object
-// exposing the same functions imported in js/firebase.js (collection, doc,
-// getDocs, runTransaction, ...) — passed in rather than imported directly so
-// this module has zero hard dependency on the Firebase SDK and can be unit
-// tested with a fake.
-export async function generateMonthInFirestore(fs, uid, targetMonth, settingsDefaults = {}, now = new Date()) {
-  const obligations = await fs.getActiveObligations(uid);
-  const instances = await fs.getAllInstances(uid);
+// Shared by both Firestore-facing entry points below: plans and writes
+// instances for exactly one month against an already-fetched
+// obligations/instances snapshot. `fs` needs only `createInstanceIfAbsent`
+// here — reads happen once in the caller, not per month.
+async function createInstancesForMonth(fs, uid, obligations, instances, targetMonth, settingsDefaults, now) {
   const { toCreate } = planMonthGeneration({ obligations, instances, targetMonth });
-
   const created = [];
   for (const obligation of toCreate) {
     const doc = snapshotInstanceFromObligation(obligation, targetMonth, settingsDefaults, now);
@@ -66,6 +63,37 @@ export async function generateMonthInFirestore(fs, uid, targetMonth, settingsDef
     // concurrently for the same user/month, only one write ever lands.
     const wasCreated = await fs.createInstanceIfAbsent(uid, doc);
     if (wasCreated) created.push(doc);
+  }
+  return created;
+}
+
+// Firestore-facing wrapper for a single month. `fs` is expected to be a
+// Firestore-like object exposing getActiveObligations/getAllInstances/
+// createInstanceIfAbsent (see js/firebase.js#firestoreGenerationAdapter) —
+// passed in rather than imported directly so this module has zero hard
+// dependency on the Firebase SDK and can be unit tested with a fake.
+export async function generateMonthInFirestore(fs, uid, targetMonth, settingsDefaults = {}, now = new Date()) {
+  const obligations = await fs.getActiveObligations(uid);
+  const instances = await fs.getAllInstances(uid);
+  const created = await createInstancesForMonth(fs, uid, obligations, instances, targetMonth, settingsDefaults, now);
+  return { created };
+}
+
+// §14: obligations paid "ahead" (e.g. last working day of the month before)
+// need next month's instance to already exist and be payable before next
+// month starts. Rather than special-casing which obligations are pay-ahead,
+// the generation window is uniformly widened to [currentMonth,
+// currentMonth + monthsAhead] for everyone — harmless for same-month payers
+// (their next-month instance just exists a little early), and exactly what
+// pay-ahead payers need. Reads obligations/instances once and reuses that
+// snapshot across every month in the window.
+export async function generateAheadInFirestore(fs, uid, currentMonth, settingsDefaults = {}, monthsAhead = 1, now = new Date()) {
+  const obligations = await fs.getActiveObligations(uid);
+  const instances = await fs.getAllInstances(uid);
+  const created = [];
+  for (let i = 0; i <= monthsAhead; i++) {
+    const targetMonth = addMonths(currentMonth, i);
+    created.push(...await createInstancesForMonth(fs, uid, obligations, instances, targetMonth, settingsDefaults, now));
   }
   return { created };
 }

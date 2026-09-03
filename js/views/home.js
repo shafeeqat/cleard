@@ -90,12 +90,13 @@ export function renderHome(container) {
   wireMonthNav(container);
 }
 
-// The only real bound is forward: there's nothing generated past today's
-// real month, so "next" stops there. Backward is unrestricted — browsing to
-// a month before any obligation existed just honestly shows "Nothing to
-// clear" rather than being blocked.
+// The only real bound is forward: generation runs one month ahead of today
+// (see generateAheadInFirestore, for pay-ahead obligations), so that's as
+// far as "next" can go — there's nothing generated past it yet. Backward is
+// unrestricted — browsing to a month before any obligation existed just
+// honestly shows "Nothing to clear" rather than being blocked.
 function monthNavBounds() {
-  return { latest: state.currentMonth };
+  return { latest: addMonths(state.currentMonth, 1) };
 }
 
 function renderMonthNav(month, { latest }) {
@@ -238,7 +239,11 @@ function renderNothingToClear(container, month, bounds) {
 function renderCompletion(container, month, monthInstances, bounds) {
   const total = monthInstances.reduce((sum, i) => sum + (i.amountActual ?? i.amountExpected ?? 0), 0);
   const nextMonth = addMonths(month, 1);
-  const nextExpected = checkMonthIntegrity({ obligations: state.obligations, instances: [], targetMonth: nextMonth }).expectedCount;
+  // Real instances now (generateAheadInFirestore generates one month ahead),
+  // so pass the actual data — an empty array here would make every
+  // obligation look "still expected" even ones already fully cleared, since
+  // countClearedByObligation would see zero clears for anything.
+  const nextExpected = checkMonthIntegrity({ obligations: state.obligations, instances: state.instances, targetMonth: nextMonth }).expectedCount;
   container.innerHTML = `
     <div class="max-w-xl mx-auto text-center py-16">
       ${renderMonthNav(month, bounds)}

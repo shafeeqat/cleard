@@ -7,6 +7,11 @@ import { openModal, closeModal, escapeHtml } from '../ui.js';
 export function renderHistory(container) {
   const byMonth = new Map();
   for (const inst of state.instances) {
+    // Generation now runs one month ahead of real time so pay-ahead
+    // obligations are payable early (see generateAheadInFirestore) — that
+    // upcoming month is in-progress activity that belongs on Home, not in
+    // an "archival records" list, until it's actually arrived.
+    if (inst.month > state.currentMonth) continue;
     if (!byMonth.has(inst.month)) byMonth.set(inst.month, []);
     byMonth.get(inst.month).push(inst);
   }

@@ -24,6 +24,29 @@ export function summary(fileLabel) {
   if (failCount > 0) process.exitCode = 1;
 }
 
+// Fake Firestore adapter matching the interface generateMonthInFirestore/
+// generateAheadInFirestore expect (see js/firebase.js#firestoreGenerationAdapter):
+// getActiveObligations, getAllInstances, createInstanceIfAbsent. Plain
+// in-memory arrays, no framework — same style as RepSprout's own
+// catalog/test-registry.mjs fake-Firebase pattern.
+export function makeFakeFirestore({ obligations = [] } = {}) {
+  const instances = [];
+  return {
+    instances,
+    async getActiveObligations() {
+      return obligations.filter((o) => o.status !== 'deleted');
+    },
+    async getAllInstances() {
+      return instances;
+    },
+    async createInstanceIfAbsent(_uid, doc) {
+      if (instances.some((i) => i.id === doc.id)) return false;
+      instances.push(doc);
+      return true;
+    },
+  };
+}
+
 export function makeObligation(overrides = {}) {
   return {
     id: overrides.id || 'obl_test',

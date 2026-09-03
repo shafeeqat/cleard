@@ -3,7 +3,7 @@ import {
   subscribeObligations, subscribeInstances, subscribeSettings, firestoreGenerationAdapter,
 } from './firebase.js';
 import { state, allDataLoaded, effectiveSettings } from './state.js';
-import { generateMonthInFirestore } from './models/monthlyGeneration.js';
+import { generateAheadInFirestore } from './models/monthlyGeneration.js';
 import { showToast } from './ui.js';
 import { withTimeout } from './utils/async.js';
 import { renderHome } from './views/home.js';
@@ -188,11 +188,12 @@ async function onDataChanged() {
   renderCurrentView();
 }
 
-// §21/§23: generate the current month's instances once data is loaded, then
-// run the integrity check against the result. Runs at most once per session
-// per month — re-running on every snapshot tick would be wasted Firestore
-// reads/writes (§51), and generation is already idempotent if it did run
-// again.
+// §21/§23: generate the current month's instances (and one month ahead, so
+// pay-ahead obligations are already payable before their month starts — see
+// generateAheadInFirestore) once data is loaded. Runs at most once per
+// session per month — re-running on every snapshot tick would be wasted
+// Firestore reads/writes (§51), and generation is already idempotent if it
+// did run again.
 async function maybeRunMonthlyGeneration() {
   if (!state.user) return;
   if (generationRanForMonth === state.currentMonth) return;
@@ -200,7 +201,7 @@ async function maybeRunMonthlyGeneration() {
   try {
     const adapter = firestoreGenerationAdapter(state.user.uid);
     const { preferredPaymentDay, preferredPaymentDayOfMonth } = effectiveSettings();
-    await withTimeout(generateMonthInFirestore(adapter, state.user.uid, state.currentMonth, { preferredPaymentDay, preferredPaymentDayOfMonth }), 15000);
+    await withTimeout(generateAheadInFirestore(adapter, state.user.uid, state.currentMonth, { preferredPaymentDay, preferredPaymentDayOfMonth }), 20000);
   } catch (e) {
     generationRanForMonth = null; // allow retry on next data tick
     showToast("We couldn't prepare this month yet. Pull to refresh or check your connection.", { tone: 'error' });
