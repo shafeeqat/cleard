@@ -90,23 +90,19 @@ export function renderHome(container) {
   wireMonthNav(container);
 }
 
-// Bounds for the prev/next month arrows: never past the real current month
-// (there's nothing generated yet beyond it), and never before the earliest
-// month with any real data — so navigating never lands on a guaranteed-empty
-// month.
+// The only real bound is forward: there's nothing generated past today's
+// real month, so "next" stops there. Backward is unrestricted — browsing to
+// a month before any obligation existed just honestly shows "Nothing to
+// clear" rather than being blocked.
 function monthNavBounds() {
-  const months = state.instances.map((i) => i.month)
-    .concat(state.obligations.map((o) => o.startMonth).filter(Boolean));
-  const earliest = months.length ? months.reduce((a, b) => (a < b ? a : b)) : state.currentMonth;
-  return { earliest, latest: state.currentMonth };
+  return { latest: state.currentMonth };
 }
 
-function renderMonthNav(month, { earliest, latest }) {
-  const canGoPrev = month > earliest;
+function renderMonthNav(month, { latest }) {
   const canGoNext = month < latest;
   return `
     <div class="flex items-center justify-center gap-3 mb-2">
-      <button id="month-nav-prev" class="p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring disabled:opacity-30 disabled:pointer-events-none" ${canGoPrev ? '' : 'disabled aria-disabled="true"'} aria-label="Previous month">
+      <button id="month-nav-prev" class="p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring" aria-label="Previous month">
         <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
       </button>
       <h1 id="home-heading" class="font-display-serif text-display-serif md:text-display-serif text-headline-lg-mobile text-primary">${escapeHtml(monthShortLabel(month))}</h1>
