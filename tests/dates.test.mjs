@@ -1,6 +1,7 @@
 import { assert, summary } from './helpers.mjs';
 import {
   monthKey, addMonths, lastWorkingDayOfMonth, dayOfMonthDate, monthsBetweenInclusive,
+  daysInMonth, firstWeekdayOfMonth,
 } from '../js/utils/dates.js';
 
 console.log('dates.test.mjs');
@@ -19,5 +20,9 @@ assert(dayOfMonthDate('2026-10', 5) === '2026-10-05', 'day-of-month resolves a n
 
 assert(monthsBetweenInclusive('2026-01', '2026-12') === 12, 'a full calendar year is 12 inclusive months');
 assert(monthsBetweenInclusive('2026-01', '2026-01') === 1, 'same start/end month counts as one month');
+
+assert(daysInMonth('2026-09') === 30, 'September 2026 has 30 days');
+assert(daysInMonth('2026-02') === 28, 'February 2026 (non-leap) has 28 days');
+assert(firstWeekdayOfMonth('2026-09') === 2, 'September 1 2026 is a Tuesday (weekday index 2)');
 
 summary('dates.test.mjs');

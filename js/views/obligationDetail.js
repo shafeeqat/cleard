@@ -1,5 +1,5 @@
 import { state } from '../state.js';
-import { saveInstance, saveObligation } from '../firebase.js';
+import { saveInstance, saveObligation, deleteInstance } from '../firebase.js';
 import { remainingOccurrences, isLifecycleComplete } from '../models/obligations.js';
 import { countClearedByObligation } from '../models/monthlyGeneration.js';
 import { applyPaymentAnswer, applyGiroDeductionAnswer, applyKnownAmount, unpayInstance, isCleared } from '../models/monthlyInstances.js';
@@ -26,10 +26,16 @@ function bodyHtml(instance, obligation, { isGiro, cleared, remaining }) {
     <div class="p-6">
       <div class="flex items-start justify-between mb-4">
         <h2 id="detail-title" class="font-headline-lg-mobile text-headline-lg-mobile text-primary">${escapeHtml(instance.name)}</h2>
-        <button id="detail-close" class="p-1 -mr-1 -mt-1 text-secondary hover:text-primary transition-colors rounded-full focus-ring" aria-label="Close">
-          <span class="material-symbols-outlined" aria-hidden="true">close</span>
-        </button>
+        <div class="flex items-center -mr-1 -mt-1">
+          <button id="detail-delete" class="p-1 text-secondary hover:text-error transition-colors rounded-full focus-ring" aria-label="Delete this month's entry">
+            <span class="material-symbols-outlined" aria-hidden="true">delete</span>
+          </button>
+          <button id="detail-close" class="p-1 text-secondary hover:text-primary transition-colors rounded-full focus-ring" aria-label="Close">
+            <span class="material-symbols-outlined" aria-hidden="true">close</span>
+          </button>
+        </div>
       </div>
+      ${!obligation ? `<p class="font-body-sm text-body-sm text-secondary italic mb-4">This entry's obligation was deleted — you can only remove it now.</p>` : ''}
 
       <div class="mb-6">
         ${amountKnown
@@ -71,6 +77,26 @@ function bodyHtml(instance, obligation, { isGiro, cleared, remaining }) {
 
 function wire(root, instance, obligation, { isGiro }) {
   root.querySelector('#detail-close')?.addEventListener('click', closeModal);
+
+  root.querySelector('#detail-delete')?.addEventListener('click', async () => {
+    const confirmed = await confirmDialog({
+      title: 'Delete this entry?',
+      messages: [
+        `This removes ${instance.name} for this month only.`,
+        obligation ? "It won't affect the master obligation or any other month." : 'This does not affect any other month.',
+      ],
+      confirmLabel: 'Delete',
+      destructive: true,
+    });
+    if (!confirmed) return;
+    try {
+      await withTimeout(deleteInstance(instance.userId, instance.id));
+      closeModal();
+      showToast('Entry deleted.', { tone: 'success' });
+    } catch (e) {
+      showToast(e.message.includes('too long') ? e.message : "Couldn't delete this entry. Please try again.", { tone: 'error' });
+    }
+  });
 
   root.querySelector('#detail-unpay')?.addEventListener('click', async () => {
     const confirmed = await confirmDialog({

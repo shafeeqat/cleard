@@ -59,6 +59,19 @@ export function toISODate(date) {
   return date.toISOString().slice(0, 10);
 }
 
+// Number of days in the given month (e.g. 28-31).
+export function daysInMonth(monthKeyStr) {
+  const { year, monthIndex0 } = parseMonthKey(monthKeyStr);
+  return new Date(Date.UTC(year, monthIndex0 + 1, 0)).getUTCDate();
+}
+
+// Day-of-week (0 = Sunday) the 1st of the month falls on — used to pad a
+// calendar grid's leading empty cells.
+export function firstWeekdayOfMonth(monthKeyStr) {
+  const { year, monthIndex0 } = parseMonthKey(monthKeyStr);
+  return new Date(Date.UTC(year, monthIndex0, 1)).getUTCDay();
+}
+
 export function isMonthWithinRange(monthKeyStr, startMonthKeyStr, endMonthKeyStr) {
   if (monthKeyStr < startMonthKeyStr) return false;
   if (endMonthKeyStr && monthKeyStr > endMonthKeyStr) return false;

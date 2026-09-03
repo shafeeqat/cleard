@@ -1,5 +1,8 @@
-// Small shared UI primitives — toasts and a generic modal/sheet host. Kept
-// framework-free and DOM-direct, matching the rest of the app.
+// Small shared UI primitives — toasts, a generic modal/sheet host, and the
+// month-navigation header reused by Home and Calendar. Kept framework-free
+// and DOM-direct, matching the rest of the app.
+
+import { monthShortLabel } from './utils/dates.js';
 
 const toastRoot = () => document.getElementById('toast-root');
 const modalRoot = () => document.getElementById('modal-root');
@@ -13,7 +16,7 @@ export function showToast(message, { tone = 'default', duration = 4000 } = {}) {
   const toneClasses = tone === 'error'
     ? 'bg-error text-on-error'
     : tone === 'success'
-      ? 'bg-success text-on-success-container'
+      ? 'bg-success text-on-success'
       : 'bg-inverse-surface text-inverse-on-surface';
   el.className = `pointer-events-auto fade-in font-body-sm text-body-sm px-4 py-3 rounded-lg shadow-lg max-w-sm text-center ${toneClasses}`;
   el.setAttribute('role', 'status');
@@ -97,4 +100,31 @@ export function escapeHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
+}
+
+// Shared month-navigation header — used by Home and Calendar so both move
+// through the same month concept (state.viewedMonth) with one consistent
+// look. Navigation is intentionally unbounded in both directions: backward
+// just honestly shows "nothing yet" before any obligation existed, and
+// forward is exactly the planning-ahead feature (browsing past the real
+// generated window shows a clearly-labelled projection, never blocked).
+export function renderMonthNav(month, { headingId } = {}) {
+  return `
+    <div class="flex items-center justify-center gap-3 mb-2">
+      <button class="month-nav-prev p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring" aria-label="Previous month">
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+      </button>
+      <h1 ${headingId ? `id="${headingId}"` : ''} class="font-display-serif text-display-serif md:text-display-serif text-headline-lg-mobile text-primary">${escapeHtml(monthShortLabel(month))}</h1>
+      <button class="month-nav-next p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring" aria-label="Next month">
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+      </button>
+    </div>
+  `;
+}
+
+// `onChange(direction)` is called with -1 or +1; the caller owns updating
+// state.viewedMonth and re-rendering.
+export function wireMonthNav(container, onChange) {
+  container.querySelector('.month-nav-prev')?.addEventListener('click', () => onChange(-1));
+  container.querySelector('.month-nav-next')?.addEventListener('click', () => onChange(1));
 }

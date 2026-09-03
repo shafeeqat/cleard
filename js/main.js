@@ -9,9 +9,11 @@ import { withTimeout } from './utils/async.js';
 import { renderHome } from './views/home.js';
 import { renderObligationsList } from './views/obligationsList.js';
 import { renderHistory } from './views/history.js';
+import { renderCalendar } from './views/calendar.js';
 import { renderSettings } from './views/settings.js';
+import { openAboutModal } from './views/about.js';
 
-const VIEWS = ['home', 'obligations', 'history', 'settings'];
+const VIEWS = ['home', 'obligations', 'history', 'calendar', 'settings'];
 let unsubscribers = [];
 let generationRanForMonth = null;
 
@@ -48,6 +50,7 @@ export function goView(view) {
   document.getElementById('main-content')?.focus({ preventScroll: true });
   window.scrollTo({ top: 0 });
   closeMobileDrawer();
+  closeAccountMenu();
 }
 
 export function renderCurrentView() {
@@ -56,6 +59,7 @@ export function renderCurrentView() {
     case 'home': renderHome(document.getElementById('view-home')); break;
     case 'obligations': renderObligationsList(document.getElementById('view-obligations')); break;
     case 'history': renderHistory(document.getElementById('view-history')); break;
+    case 'calendar': renderCalendar(document.getElementById('view-calendar')); break;
     case 'settings': renderSettings(document.getElementById('view-settings')); break;
   }
 }
@@ -89,10 +93,18 @@ hamburgerBtn.addEventListener('click', () => {
   drawer.classList.contains('hidden') ? openMobileDrawer() : closeMobileDrawer();
 });
 drawerBackdrop.addEventListener('click', closeMobileDrawer);
+document.getElementById('about-link').addEventListener('click', () => {
+  closeMobileDrawer();
+  openAboutModal();
+});
 
 // ── Account menu ─────────────────────────────────────────────────────────
 const accountBtn = document.getElementById('account-btn');
 const accountMenu = document.getElementById('account-menu');
+function closeAccountMenu() {
+  accountMenu.classList.add('hidden');
+  accountBtn.setAttribute('aria-expanded', 'false');
+}
 accountBtn.addEventListener('click', (e) => {
   e.stopPropagation();
   const isHidden = accountMenu.classList.contains('hidden');
@@ -101,12 +113,11 @@ accountBtn.addEventListener('click', (e) => {
 });
 document.addEventListener('click', (e) => {
   if (!accountMenu.classList.contains('hidden') && !accountMenu.contains(e.target) && e.target !== accountBtn) {
-    accountMenu.classList.add('hidden');
-    accountBtn.setAttribute('aria-expanded', 'false');
+    closeAccountMenu();
   }
 });
 document.getElementById('signout-btn').addEventListener('click', async () => {
-  accountMenu.classList.add('hidden');
+  closeAccountMenu();
   await signOutUser();
 });
 

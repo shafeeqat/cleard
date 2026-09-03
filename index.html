@@ -47,6 +47,7 @@
           'error-container': 'rgb(var(--c-error-container) / <alpha-value>)',
           'on-error-container': 'rgb(var(--c-on-error-container) / <alpha-value>)',
           success: 'rgb(var(--c-success) / <alpha-value>)',
+          'on-success': 'rgb(var(--c-on-success) / <alpha-value>)',
           'success-container': 'rgb(var(--c-success-container) / <alpha-value>)',
           'on-success-container': 'rgb(var(--c-on-success-container) / <alpha-value>)',
           warning: 'rgb(var(--c-warning) / <alpha-value>)',
@@ -113,6 +114,7 @@
     --c-error-container: 255 218 214;
     --c-on-error-container: 147 0 10;
     --c-success: 22 101 52;
+    --c-on-success: 255 255 255;
     --c-success-container: 220 252 231;
     --c-on-success-container: 22 101 52;
     --c-warning: 146 64 14;
@@ -149,6 +151,7 @@
     --c-error-container: 147 0 10;
     --c-on-error-container: 255 218 214;
     --c-success: 148 214 168;
+    --c-on-success: 12 41 26;
     --c-success-container: 20 63 40;
     --c-on-success-container: 199 245 214;
     --c-warning: 245 197 132;
@@ -238,7 +241,7 @@
       <button id="hamburger-btn" class="p-2 -ml-2 text-primary hover:bg-surface-container-low active:opacity-70 transition-colors rounded-full flex items-center justify-center focus-ring" aria-label="Open menu" aria-haspopup="true" aria-expanded="false" aria-controls="mobile-drawer">
         <span class="material-symbols-outlined" aria-hidden="true">menu</span>
       </button>
-      <img src="img/logo-header.png" alt="clear'd." class="logo-header md:hidden h-8 w-auto">
+      <img src="img/logo-header.png" alt="clear'd." class="logo-header md:hidden h-12 w-auto">
       <div class="hidden md:block font-display-serif text-display-serif italic text-primary">clear'd.</div>
       <button id="account-btn" class="p-2 -mr-2 text-primary hover:bg-surface-container-low active:opacity-70 transition-colors rounded-full flex items-center justify-center focus-ring" aria-label="Account menu" aria-haspopup="true" aria-expanded="false" aria-controls="account-menu">
         <span class="material-symbols-outlined" aria-hidden="true">account_circle</span>
@@ -249,7 +252,8 @@
   <!-- Account dropdown -->
   <div id="account-menu" class="hidden fixed top-16 right-4 z-50 bg-surface-container-lowest border border-outline-variant rounded-lg shadow-lg py-1 min-w-[180px]">
     <div id="account-menu-email" class="px-4 py-2 font-body-sm text-body-sm text-on-surface-variant border-b border-outline-variant truncate"></div>
-    <button id="signout-btn" class="w-full text-left px-4 py-2 font-body-lg text-body-lg hover:bg-surface-container-low transition-colors">Sign out</button>
+    <a data-view="settings" href="#settings" class="block w-full text-left px-4 py-2 font-body-lg text-body-lg hover:bg-surface-container-low transition-colors">Settings</a>
+    <button id="signout-btn" class="w-full text-left px-4 py-2 font-body-lg text-body-lg hover:bg-surface-container-low transition-colors border-t border-outline-variant">Sign out</button>
   </div>
 
   <div class="max-w-[1040px] w-full mx-auto flex flex-1 items-stretch">
@@ -264,8 +268,8 @@
       <a data-view="history" href="#history" class="nav-link flex items-center gap-3 p-2 rounded transition-colors font-body-lg text-body-lg">
         <span class="material-symbols-outlined" aria-hidden="true">history</span> History
       </a>
-      <a data-view="settings" href="#settings" class="nav-link flex items-center gap-3 p-2 rounded transition-colors font-body-lg text-body-lg">
-        <span class="material-symbols-outlined" aria-hidden="true">settings</span> Settings
+      <a data-view="calendar" href="#calendar" class="nav-link flex items-center gap-3 p-2 rounded transition-colors font-body-lg text-body-lg">
+        <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span> Calendar
       </a>
     </nav>
 
@@ -273,6 +277,7 @@
       <section id="view-home" class="view" aria-labelledby="home-heading"></section>
       <section id="view-obligations" class="view hidden" aria-labelledby="obligations-heading"></section>
       <section id="view-history" class="view hidden" aria-labelledby="history-heading"></section>
+      <section id="view-calendar" class="view hidden" aria-labelledby="calendar-heading"></section>
       <section id="view-settings" class="view hidden" aria-labelledby="settings-heading"></section>
     </main>
   </div>
@@ -291,9 +296,9 @@
       <span class="material-symbols-outlined" aria-hidden="true">history</span>
       <span class="font-label-caps text-[10px] tracking-wide">History</span>
     </a>
-    <a data-view="settings" href="#settings" class="bnav-link flex flex-col items-center justify-center gap-1 pt-2 w-16 transition-colors">
-      <span class="material-symbols-outlined" aria-hidden="true">settings</span>
-      <span class="font-label-caps text-[10px] tracking-wide">Settings</span>
+    <a data-view="calendar" href="#calendar" class="bnav-link flex flex-col items-center justify-center gap-1 pt-2 w-16 transition-colors">
+      <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span>
+      <span class="font-label-caps text-[10px] tracking-wide">Calendar</span>
     </a>
   </nav>
 
@@ -311,9 +316,18 @@
       <a data-view="history" href="#history" class="drawer-link flex items-center gap-3 p-2 rounded transition-colors font-body-lg text-body-lg">
         <span class="material-symbols-outlined" aria-hidden="true">history</span> History
       </a>
+      <a data-view="calendar" href="#calendar" class="drawer-link flex items-center gap-3 p-2 rounded transition-colors font-body-lg text-body-lg">
+        <span class="material-symbols-outlined" aria-hidden="true">calendar_month</span> Calendar
+      </a>
+    </nav>
+    <hr class="border-outline-variant my-4">
+    <nav class="flex flex-col gap-1" aria-label="Secondary">
       <a data-view="settings" href="#settings" class="drawer-link flex items-center gap-3 p-2 rounded transition-colors font-body-lg text-body-lg">
         <span class="material-symbols-outlined" aria-hidden="true">settings</span> Settings
       </a>
+      <button id="about-link" class="drawer-link flex items-center gap-3 p-2 rounded transition-colors font-body-lg text-body-lg w-full text-left">
+        <span class="material-symbols-outlined" aria-hidden="true">info</span> About
+      </button>
     </nav>
   </div>
 

@@ -1,9 +1,10 @@
 import { state } from '../state.js';
 import { checkMonthIntegrity } from '../models/integrity.js';
 import { isCleared } from '../models/monthlyInstances.js';
+import { isProjectedMonth, projectObligationsForMonth } from '../models/monthProjection.js';
 import { monthShortLabel, addMonths } from '../utils/dates.js';
 import { formatAmountCompact, formatDateShort, PAYMENT_METHOD_LABELS } from '../utils/format.js';
-import { escapeHtml } from '../ui.js';
+import { escapeHtml, renderMonthNav, wireMonthNav } from '../ui.js';
 import { openObligationDetail } from './obligationDetail.js';
 import { openAddObligationModal } from './obligationForm.js';
 import { isAiAvailable, openMonthlyReview, openAskQuestion } from './aiPanel.js';
@@ -15,11 +16,16 @@ export function renderHome(container) {
   }
 
   const month = state.viewedMonth;
-  const bounds = monthNavBounds();
+
+  if (isProjectedMonth(month, state.currentMonth)) {
+    renderPreviewMonth(container, month);
+    return;
+  }
+
   const monthInstances = state.instances.filter((i) => i.month === month);
 
   if (monthInstances.length === 0) {
-    renderNothingToClear(container, month, bounds);
+    renderNothingToClear(container, month);
     return;
   }
 
@@ -30,7 +36,7 @@ export function renderHome(container) {
 
   const allCleared = cleared.length === monthInstances.length;
   if (allCleared) {
-    renderCompletion(container, month, monthInstances, bounds);
+    renderCompletion(container, month, monthInstances);
     return;
   }
 
@@ -50,7 +56,7 @@ export function renderHome(container) {
     <div class="max-w-2xl mx-auto">
       ${integrity.missing.length > 0 ? renderIntegrityBanner(month, integrity) : ''}
       <header class="mb-10 text-center">
-        ${renderMonthNav(month, bounds)}
+        ${renderMonthNav(month, { headingId: 'home-heading' })}
         <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-on-surface-variant">
           <div class="flex items-center gap-1.5">
             <span class="material-symbols-outlined text-xl" aria-hidden="true">task_alt</span>
@@ -87,40 +93,17 @@ export function renderHome(container) {
   `;
 
   wireInteractions(container, monthInstances);
-  wireMonthNav(container);
+  wireHomeMonthNav(container);
 }
 
-// The only real bound is forward: generation runs one month ahead of today
-// (see generateAheadInFirestore, for pay-ahead obligations), so that's as
-// far as "next" can go — there's nothing generated past it yet. Backward is
-// unrestricted — browsing to a month before any obligation existed just
-// honestly shows "Nothing to clear" rather than being blocked.
-function monthNavBounds() {
-  return { latest: addMonths(state.currentMonth, 1) };
-}
-
-function renderMonthNav(month, { latest }) {
-  const canGoNext = month < latest;
-  return `
-    <div class="flex items-center justify-center gap-3 mb-2">
-      <button id="month-nav-prev" class="p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring" aria-label="Previous month">
-        <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
-      </button>
-      <h1 id="home-heading" class="font-display-serif text-display-serif md:text-display-serif text-headline-lg-mobile text-primary">${escapeHtml(monthShortLabel(month))}</h1>
-      <button id="month-nav-next" class="p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring disabled:opacity-30 disabled:pointer-events-none" ${canGoNext ? '' : 'disabled aria-disabled="true"'} aria-label="Next month">
-        <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
-      </button>
-    </div>
-  `;
-}
-
-function wireMonthNav(container) {
-  container.querySelector('#month-nav-prev')?.addEventListener('click', () => {
-    state.viewedMonth = addMonths(state.viewedMonth, -1);
-    renderHome(container);
-  });
-  container.querySelector('#month-nav-next')?.addEventListener('click', () => {
-    state.viewedMonth = addMonths(state.viewedMonth, 1);
+// Shared by every Home render branch (normal/empty/completion/preview): one
+// place that knows how to move state.viewedMonth and re-render. Navigation
+// is deliberately unbounded in both directions (§ user request: "toggle
+// between months indefinitely") — browsing past the real generated window
+// just switches to the clearly-labelled projection in renderPreviewMonth.
+function wireHomeMonthNav(container) {
+  wireMonthNav(container, (direction) => {
+    state.viewedMonth = addMonths(state.viewedMonth, direction);
     renderHome(container);
   });
 }
@@ -226,17 +209,17 @@ function renderClearedSection(items) {
   `;
 }
 
-function renderNothingToClear(container, month, bounds) {
+function renderNothingToClear(container, month) {
   container.innerHTML = `
     <div class="max-w-2xl mx-auto text-center py-20">
-      ${renderMonthNav(month, bounds)}
+      ${renderMonthNav(month, { headingId: 'home-heading' })}
       <p class="font-body-lg text-body-lg text-on-surface-variant mt-4">Nothing to clear.</p>
     </div>
   `;
-  wireMonthNav(container);
+  wireHomeMonthNav(container);
 }
 
-function renderCompletion(container, month, monthInstances, bounds) {
+function renderCompletion(container, month, monthInstances) {
   const total = monthInstances.reduce((sum, i) => sum + (i.amountActual ?? i.amountExpected ?? 0), 0);
   const nextMonth = addMonths(month, 1);
   // Real instances now (generateAheadInFirestore generates one month ahead),
@@ -246,7 +229,7 @@ function renderCompletion(container, month, monthInstances, bounds) {
   const nextExpected = checkMonthIntegrity({ obligations: state.obligations, instances: state.instances, targetMonth: nextMonth }).expectedCount;
   container.innerHTML = `
     <div class="max-w-xl mx-auto text-center py-16">
-      ${renderMonthNav(month, bounds)}
+      ${renderMonthNav(month, { headingId: 'home-heading' })}
       <p class="font-display-serif text-headline-lg text-primary mb-6 italic">clear'd.</p>
       <p class="font-body-lg text-body-lg text-on-surface-variant mb-1 tabular-nums">${monthInstances.length} / ${monthInstances.length} obligations</p>
       <p class="font-amount-display text-amount-display text-primary mb-6 tabular-nums">${formatAmountCompact(total)} cleared</p>
@@ -258,7 +241,52 @@ function renderCompletion(container, month, monthInstances, bounds) {
       </div>
     </div>
   `;
-  wireMonthNav(container);
+  wireHomeMonthNav(container);
+}
+
+// Beyond the real generated window: a clearly-labelled, read-only
+// projection of what's likely still active, assuming on-time payment for
+// every month in between (see models/monthProjection.js). No pay
+// interaction here — there's no real instance to write to yet.
+function renderPreviewMonth(container, month) {
+  const results = projectObligationsForMonth({
+    obligations: state.obligations,
+    instances: state.instances,
+    targetMonth: month,
+    currentMonth: state.currentMonth,
+  });
+  const total = results.reduce((sum, r) => sum + (r.instance.amountExpected ?? 0), 0);
+
+  container.innerHTML = `
+    <div class="max-w-2xl mx-auto">
+      <header class="mb-6 text-center">
+        ${renderMonthNav(month, { headingId: 'home-heading' })}
+        <p class="font-body-sm text-body-sm text-on-surface-variant tabular-nums">${results.length} obligation${results.length === 1 ? '' : 's'} expected${total > 0 ? ` · ${formatAmountCompact(total)}` : ''}</p>
+      </header>
+
+      <div class="mb-section-gap p-gutter border border-outline-variant rounded-lg bg-surface-container-low flex items-start gap-2">
+        <span class="material-symbols-outlined text-secondary text-[18px]" aria-hidden="true">info</span>
+        <p class="font-body-sm text-body-sm text-secondary">This is a preview — it assumes every obligation between now and ${escapeHtml(monthShortLabel(month))} gets paid on time. Nothing here is real yet, and nothing can be paid from this screen.</p>
+      </div>
+
+      ${results.length === 0
+        ? `<p class="font-body-sm text-body-sm text-secondary text-center py-16">Nothing expected — either nothing's scheduled yet, or everything active now will have finished by ${escapeHtml(monthShortLabel(month))}.</p>`
+        : `<div class="flex flex-col gap-unit">
+            ${results.map((r) => `
+              <div class="p-gutter border border-outline-variant rounded-lg bg-surface-container-lowest flex items-center justify-between opacity-80">
+                <div>
+                  <h3 class="font-title-md text-title-md text-primary mb-1">${escapeHtml(r.instance.name)}</h3>
+                  <p class="font-body-sm text-body-sm text-secondary flex items-center gap-1">
+                    ${r.instance.dueDate ? `<span class="material-symbols-outlined text-[16px]" aria-hidden="true">calendar_today</span> Due ${escapeHtml(formatDateShort(r.instance.dueDate))}` : 'No fixed due date'}
+                  </p>
+                </div>
+                <div class="font-amount-display text-amount-display text-secondary tabular-nums">${r.instance.amountExpected != null ? formatAmountCompact(r.instance.amountExpected) : '—'}</div>
+              </div>
+            `).join('')}
+          </div>`}
+    </div>
+  `;
+  wireHomeMonthNav(container);
 }
 
 function renderFirstTimeEmpty(container) {
