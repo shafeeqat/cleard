@@ -19,7 +19,7 @@ export function renderHistory(container) {
         <p class="font-body-sm text-body-sm text-on-surface-variant mt-unit">Archival records of obligations.</p>
       </header>
       ${months.length === 0
-        ? `<p class="font-body-sm text-body-sm text-secondary text-center py-16">Nothing here yet — history builds up as months are generated and cleared.</p>`
+        ? `<p class="font-body-sm text-body-sm text-secondary text-center py-16">Nothing here yet. History builds up as months are generated and cleared.</p>`
         : `<section class="flex flex-col gap-unit">
             ${months.map((m) => renderMonthCard(m, byMonth.get(m))).join('')}
           </section>`}

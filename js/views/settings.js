@@ -5,7 +5,7 @@ import { showToast, confirmDialog, escapeHtml } from '../ui.js';
 import { applyTheme, renderCurrentView } from '../main.js';
 import { withTimeout } from '../utils/async.js';
 
-const CURRENCIES = ['USD', 'SGD', 'EUR', 'GBP', 'AUD', 'MYR'];
+const CURRENCIES = ['SGD', 'USD', 'EUR', 'GBP', 'AUD', 'MYR'];
 
 export function renderSettings(container) {
   const settings = effectiveSettings();
