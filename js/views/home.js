@@ -1,7 +1,5 @@
 import { state } from '../state.js';
 import { checkMonthIntegrity } from '../models/integrity.js';
-import { remainingOccurrences } from '../models/obligations.js';
-import { countClearedByObligation } from '../models/monthlyGeneration.js';
 import { isCleared } from '../models/monthlyInstances.js';
 import { monthShortLabel, addMonths } from '../utils/dates.js';
 import { formatAmountCompact, formatDateShort, PAYMENT_METHOD_LABELS } from '../utils/format.js';
@@ -16,11 +14,12 @@ export function renderHome(container) {
     return;
   }
 
-  const month = state.currentMonth;
+  const month = state.viewedMonth;
+  const bounds = monthNavBounds();
   const monthInstances = state.instances.filter((i) => i.month === month);
 
   if (monthInstances.length === 0) {
-    renderNothingToClear(container, month);
+    renderNothingToClear(container, month, bounds);
     return;
   }
 
@@ -31,7 +30,7 @@ export function renderHome(container) {
 
   const allCleared = cleared.length === monthInstances.length;
   if (allCleared) {
-    renderCompletion(container, month, monthInstances);
+    renderCompletion(container, month, monthInstances, bounds);
     return;
   }
 
@@ -40,13 +39,18 @@ export function renderHome(container) {
     .filter((i) => !isCleared(i))
     .reduce((sum, i) => sum + (i.amountExpected ?? i.amountActual ?? 0), 0);
 
-  const integrity = checkMonthIntegrity({ obligations: state.obligations, instances: state.instances, targetMonth: month });
+  // The integrity check is about whether *today's* real month is complete —
+  // showing "Review September" while browsing back to July would conflate
+  // the two, so it only ever surfaces on the actual current month.
+  const integrity = month === state.currentMonth
+    ? checkMonthIntegrity({ obligations: state.obligations, instances: state.instances, targetMonth: month })
+    : { missing: [] };
 
   container.innerHTML = `
     <div class="max-w-2xl mx-auto">
       ${integrity.missing.length > 0 ? renderIntegrityBanner(month, integrity) : ''}
       <header class="mb-10 text-center">
-        <h1 id="home-heading" class="font-display-serif text-display-serif md:text-display-serif text-headline-lg-mobile text-primary mb-2">${escapeHtml(monthShortLabel(month))}</h1>
+        ${renderMonthNav(month, bounds)}
         <div class="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-on-surface-variant">
           <div class="flex items-center gap-1.5">
             <span class="material-symbols-outlined text-xl" aria-hidden="true">task_alt</span>
@@ -83,6 +87,45 @@ export function renderHome(container) {
   `;
 
   wireInteractions(container, monthInstances);
+  wireMonthNav(container);
+}
+
+// Bounds for the prev/next month arrows: never past the real current month
+// (there's nothing generated yet beyond it), and never before the earliest
+// month with any real data — so navigating never lands on a guaranteed-empty
+// month.
+function monthNavBounds() {
+  const months = state.instances.map((i) => i.month)
+    .concat(state.obligations.map((o) => o.startMonth).filter(Boolean));
+  const earliest = months.length ? months.reduce((a, b) => (a < b ? a : b)) : state.currentMonth;
+  return { earliest, latest: state.currentMonth };
+}
+
+function renderMonthNav(month, { earliest, latest }) {
+  const canGoPrev = month > earliest;
+  const canGoNext = month < latest;
+  return `
+    <div class="flex items-center justify-center gap-3 mb-2">
+      <button id="month-nav-prev" class="p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring disabled:opacity-30 disabled:pointer-events-none" ${canGoPrev ? '' : 'disabled aria-disabled="true"'} aria-label="Previous month">
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_left</span>
+      </button>
+      <h1 id="home-heading" class="font-display-serif text-display-serif md:text-display-serif text-headline-lg-mobile text-primary">${escapeHtml(monthShortLabel(month))}</h1>
+      <button id="month-nav-next" class="p-1.5 rounded-full text-secondary hover:text-primary hover:bg-surface-container-low transition-colors focus-ring disabled:opacity-30 disabled:pointer-events-none" ${canGoNext ? '' : 'disabled aria-disabled="true"'} aria-label="Next month">
+        <span class="material-symbols-outlined" aria-hidden="true">chevron_right</span>
+      </button>
+    </div>
+  `;
+}
+
+function wireMonthNav(container) {
+  container.querySelector('#month-nav-prev')?.addEventListener('click', () => {
+    state.viewedMonth = addMonths(state.viewedMonth, -1);
+    renderHome(container);
+  });
+  container.querySelector('#month-nav-next')?.addEventListener('click', () => {
+    state.viewedMonth = addMonths(state.viewedMonth, 1);
+    renderHome(container);
+  });
 }
 
 function renderIntegrityBanner(month, integrity) {
@@ -186,23 +229,24 @@ function renderClearedSection(items) {
   `;
 }
 
-function renderNothingToClear(container, month) {
+function renderNothingToClear(container, month, bounds) {
   container.innerHTML = `
     <div class="max-w-2xl mx-auto text-center py-20">
-      <h1 id="home-heading" class="font-display-serif text-display-serif italic text-primary mb-4">${escapeHtml(monthShortLabel(month))}</h1>
-      <p class="font-body-lg text-body-lg text-on-surface-variant">Nothing to clear.</p>
+      ${renderMonthNav(month, bounds)}
+      <p class="font-body-lg text-body-lg text-on-surface-variant mt-4">Nothing to clear.</p>
     </div>
   `;
+  wireMonthNav(container);
 }
 
-function renderCompletion(container, month, monthInstances) {
+function renderCompletion(container, month, monthInstances, bounds) {
   const total = monthInstances.reduce((sum, i) => sum + (i.amountActual ?? i.amountExpected ?? 0), 0);
   const nextMonth = addMonths(month, 1);
   const nextExpected = checkMonthIntegrity({ obligations: state.obligations, instances: [], targetMonth: nextMonth }).expectedCount;
   container.innerHTML = `
     <div class="max-w-xl mx-auto text-center py-16">
-      <h1 id="home-heading" class="font-display-serif text-display-serif italic text-primary mb-1">${escapeHtml(monthShortLabel(month))}</h1>
-      <p class="font-display-serif text-headline-lg text-primary mb-6">clear'd.</p>
+      ${renderMonthNav(month, bounds)}
+      <p class="font-display-serif text-headline-lg text-primary mb-6 italic">clear'd.</p>
       <p class="font-body-lg text-body-lg text-on-surface-variant mb-1 tabular-nums">${monthInstances.length} / ${monthInstances.length} obligations</p>
       <p class="font-amount-display text-amount-display text-primary mb-6 tabular-nums">${formatAmountCompact(total)} cleared</p>
       <p class="font-body-sm text-body-sm text-on-surface-variant mb-12">All obligations accounted for.</p>
@@ -213,6 +257,7 @@ function renderCompletion(container, month, monthInstances) {
       </div>
     </div>
   `;
+  wireMonthNav(container);
 }
 
 function renderFirstTimeEmpty(container) {

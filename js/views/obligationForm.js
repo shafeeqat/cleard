@@ -134,9 +134,10 @@ function formHtml(o) {
             <label class="block font-label-caps text-label-caps text-secondary uppercase mb-1" for="f-paymentDatePreference">Intended payment date</label>
             <select id="f-paymentDatePreference" class="w-full border border-outline-variant rounded px-3 py-2 font-body-lg text-body-lg bg-surface-container-lowest focus-ring">
               <option value="global" ${!(o?.paymentDatePreference) || o.paymentDatePreference === 'global' ? 'selected' : ''}>Use my default preference</option>
-              <option value="lastWorkingDay" ${o?.paymentDatePreference === 'lastWorkingDay' ? 'selected' : ''}>Last working day</option>
-              <option value="dayOfMonth" ${o?.paymentDatePreference === 'dayOfMonth' ? 'selected' : ''}>Specific day of month</option>
+              <option value="lastWorkingDay" ${o?.paymentDatePreference === 'lastWorkingDay' ? 'selected' : ''}>Last working day of the month before</option>
+              <option value="dayOfMonth" ${o?.paymentDatePreference === 'dayOfMonth' ? 'selected' : ''}>A specific day of this month</option>
             </select>
+            <p class="font-body-sm text-body-sm text-secondary mt-1">"Last working day of the month before" pays ahead — e.g. an October obligation gets paid on the last working day of September.</p>
             <div id="f-paymentDay-wrap" class="${o?.paymentDatePreference === 'dayOfMonth' ? '' : 'hidden'} mt-2">
               <label class="block font-label-caps text-label-caps text-secondary uppercase mb-1" for="f-paymentDayOfMonth">Day of month</label>
               <input id="f-paymentDayOfMonth" type="number" min="1" max="31" value="${o?.paymentDayOfMonth ?? ''}" class="w-24 border border-outline-variant rounded px-3 py-2 font-body-lg text-body-lg bg-surface-container-lowest focus-ring">

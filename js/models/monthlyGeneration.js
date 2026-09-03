@@ -43,8 +43,10 @@ export function planMonthGeneration({ obligations, instances, targetMonth }) {
 // Builds the actual instance documents for a plan. Kept separate from
 // planMonthGeneration so tests can assert on the plan (which obligations)
 // independently of the snapshot shape (what fields land on the instance).
-export function buildInstancesForPlan(toCreate, targetMonth, now = new Date()) {
-  return toCreate.map((obligation) => snapshotInstanceFromObligation(obligation, targetMonth, now));
+// `settingsDefaults` is the user's Settings > Payment preferences, used to
+// resolve any obligation set to "use my default preference".
+export function buildInstancesForPlan(toCreate, targetMonth, settingsDefaults = {}, now = new Date()) {
+  return toCreate.map((obligation) => snapshotInstanceFromObligation(obligation, targetMonth, settingsDefaults, now));
 }
 
 // Firestore-facing wrapper. `db` is expected to be a Firestore-like object
@@ -52,14 +54,14 @@ export function buildInstancesForPlan(toCreate, targetMonth, now = new Date()) {
 // getDocs, runTransaction, ...) — passed in rather than imported directly so
 // this module has zero hard dependency on the Firebase SDK and can be unit
 // tested with a fake.
-export async function generateMonthInFirestore(fs, uid, targetMonth, now = new Date()) {
+export async function generateMonthInFirestore(fs, uid, targetMonth, settingsDefaults = {}, now = new Date()) {
   const obligations = await fs.getActiveObligations(uid);
   const instances = await fs.getAllInstances(uid);
   const { toCreate } = planMonthGeneration({ obligations, instances, targetMonth });
 
   const created = [];
   for (const obligation of toCreate) {
-    const doc = snapshotInstanceFromObligation(obligation, targetMonth, now);
+    const doc = snapshotInstanceFromObligation(obligation, targetMonth, settingsDefaults, now);
     // create-if-absent inside a transaction: even if generation runs twice
     // concurrently for the same user/month, only one write ever lands.
     const wasCreated = await fs.createInstanceIfAbsent(uid, doc);

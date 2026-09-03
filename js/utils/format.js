@@ -25,10 +25,11 @@ export function formatDateShort(isoDate) {
   return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', timeZone: 'UTC' });
 }
 
-export const CATEGORIES = ['Loans & Credit', 'Household', 'GIRO', 'Insurance', 'Subscriptions', 'Transport', 'Other'];
+export const CATEGORIES = ['Loans & Credit', 'Household', 'Bill', 'Tax', 'GIRO', 'Insurance', 'Subscriptions', 'Transport', 'Other'];
 
 export const PAYMENT_METHOD_LABELS = {
   bank_transfer: 'Bank transfer',
+  debit_card: 'Debit card',
   giro: 'GIRO',
   gxs: 'GXS',
   axs: 'AXS',
@@ -39,6 +40,7 @@ export const PAYMENT_METHOD_LABELS = {
 
 export const PAYMENT_METHOD_ICONS = {
   bank_transfer: 'account_balance',
+  debit_card: 'credit_card',
   giro: 'autorenew',
   gxs: 'smartphone',
   axs: 'point_of_sale',

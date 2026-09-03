@@ -6,7 +6,7 @@ import { monthKey, parseMonthKey, addMonths } from '../utils/dates.js';
 
 export const AMOUNT_TYPES = ['fixed', 'variable'];
 export const FREQUENCIES = ['monthly', 'weekly', 'yearly', 'custom'];
-export const PAYMENT_METHODS = ['bank_transfer', 'giro', 'gxs', 'axs', 'paynow', 'cash', 'other'];
+export const PAYMENT_METHODS = ['bank_transfer', 'debit_card', 'giro', 'gxs', 'axs', 'paynow', 'cash', 'other'];
 export const COLLECTION_DATE_TYPES = ['fixed', 'approximate', 'variable', 'none'];
 export const OBLIGATION_STATUSES = ['active', 'ending_soon', 'completed', 'ended', 'deleted'];
 

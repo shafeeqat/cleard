@@ -29,8 +29,8 @@ export function renderSettings(container) {
             <div class="p-4 flex justify-between items-center gap-4">
               <span class="font-body-lg text-body-lg">Preferred payment day</span>
               <select id="s-preferredPaymentDay" class="font-body-sm text-body-sm text-secondary bg-transparent focus-ring">
-                <option value="lastWorkingDay" ${settings.preferredPaymentDay === 'lastWorkingDay' ? 'selected' : ''}>Last working day</option>
-                <option value="dayOfMonth" ${settings.preferredPaymentDay === 'dayOfMonth' ? 'selected' : ''}>Day of month</option>
+                <option value="lastWorkingDay" ${settings.preferredPaymentDay === 'lastWorkingDay' ? 'selected' : ''}>Last working day of the month before</option>
+                <option value="dayOfMonth" ${settings.preferredPaymentDay === 'dayOfMonth' ? 'selected' : ''}>A specific day of the month</option>
               </select>
             </div>
             <div id="s-paymentDayOfMonth-row" class="p-4 flex justify-between items-center gap-4 ${settings.preferredPaymentDay === 'dayOfMonth' ? '' : 'hidden'}">
@@ -220,6 +220,7 @@ function wire(container, settings) {
 async function persist(partial) {
   try {
     await withTimeout(saveSettings(state.user.uid, partial));
+    showToast('Saved.', { tone: 'success', duration: 1500 });
   } catch (e) {
     showToast(e.message.includes('too long') ? e.message : "Couldn't save this setting. Please try again.", { tone: 'error' });
   }

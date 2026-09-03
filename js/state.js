@@ -13,7 +13,12 @@ export const state = {
   instancesLoaded: false,
   settingsLoaded: false,
   currentView: 'home',
+  // The real "today" month — anchors monthly generation and the integrity
+  // check. Never changed by month-navigation UI.
   currentMonth: monthKeyFromDate(new Date()),
+  // Which month Home is currently displaying — starts on currentMonth, but
+  // moves independently when the user taps the prev/next month arrows.
+  viewedMonth: monthKeyFromDate(new Date()),
   historyOpenMonth: null,
 };
 

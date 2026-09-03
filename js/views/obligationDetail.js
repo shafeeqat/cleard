@@ -2,9 +2,9 @@ import { state } from '../state.js';
 import { saveInstance, saveObligation } from '../firebase.js';
 import { remainingOccurrences, isLifecycleComplete } from '../models/obligations.js';
 import { countClearedByObligation } from '../models/monthlyGeneration.js';
-import { applyPaymentAnswer, applyGiroDeductionAnswer, applyKnownAmount, isCleared } from '../models/monthlyInstances.js';
+import { applyPaymentAnswer, applyGiroDeductionAnswer, applyKnownAmount, unpayInstance, isCleared } from '../models/monthlyInstances.js';
 import { formatAmount, formatDateShort, PAYMENT_METHOD_LABELS } from '../utils/format.js';
-import { openModal, closeModal, showToast, escapeHtml } from '../ui.js';
+import { openModal, closeModal, confirmDialog, showToast, escapeHtml } from '../ui.js';
 import { withTimeout } from '../utils/async.js';
 
 export function openObligationDetail(instance) {
@@ -53,7 +53,10 @@ function bodyHtml(instance, obligation, { isGiro, cleared, remaining }) {
 
       <div id="detail-actions">
         ${cleared
-          ? `<p class="font-body-sm text-body-sm text-secondary text-center">Cleared${instance.paidAt ? ' on ' + escapeHtml(formatDateShort(instance.paidAt.slice(0, 10))) : ''}.</p>`
+          ? `<div class="text-center">
+               <p class="font-body-sm text-body-sm text-secondary mb-2">Cleared${instance.paidAt ? ' on ' + escapeHtml(formatDateShort(instance.paidAt.slice(0, 10))) : ''}.</p>
+               <button id="detail-unpay" class="font-body-sm text-body-sm text-secondary hover:text-error underline underline-offset-2 transition-colors">Mark as unpaid</button>
+             </div>`
           : `
           <p class="font-title-md text-title-md text-center mb-3">${isGiro ? 'Has this been deducted?' : 'Did you pay this?'}</p>
           <div class="flex gap-3">
@@ -68,6 +71,22 @@ function bodyHtml(instance, obligation, { isGiro, cleared, remaining }) {
 
 function wire(root, instance, obligation, { isGiro }) {
   root.querySelector('#detail-close')?.addEventListener('click', closeModal);
+
+  root.querySelector('#detail-unpay')?.addEventListener('click', async () => {
+    const confirmed = await confirmDialog({
+      title: 'Mark as unpaid?',
+      messages: [`This moves ${instance.name} back to outstanding${isGiro ? '/scheduled' : ''}.`],
+      confirmLabel: 'Mark as unpaid',
+      destructive: true,
+    });
+    if (!confirmed) return;
+    const ok = await persist(unpayInstance(instance));
+    if (ok) {
+      await maybeReopenObligation(obligation);
+      closeModal();
+      showToast('Marked as unpaid.', { tone: 'default' });
+    }
+  });
 
   const amountInput = root.querySelector('#detail-amount-input');
   const yesBtn = root.querySelector('#detail-yes');
@@ -125,6 +144,23 @@ async function maybeCompleteObligation(obligation, previousInstance) {
     await withTimeout(saveObligation(obligation.userId, { ...obligation, status: 'completed', updatedAt: new Date().toISOString() }));
   } catch (e) {
     showToast("This obligation is fully paid but couldn't be marked completed. It will update next time you're online.", { tone: 'error' });
+  }
+}
+
+// Symmetric counterpart to maybeCompleteObligation: undoing the payment that
+// completed an obligation's lifecycle reopens it. Only fires when the
+// obligation is actually 'completed' and no longer meets the completion
+// condition once this instance is no longer counted as cleared — never a
+// blanket "unpay always reactivates."
+async function maybeReopenObligation(obligation) {
+  if (!obligation || obligation.status !== 'completed' || obligation.occurrenceCount == null) return;
+  const clearedCount = countClearedByObligation(state.instances)[obligation.id] || 0;
+  const newCount = Math.max(clearedCount - 1, 0);
+  if (isLifecycleComplete(obligation, newCount)) return; // still complete via other cleared instances
+  try {
+    await withTimeout(saveObligation(obligation.userId, { ...obligation, status: 'active', updatedAt: new Date().toISOString() }));
+  } catch (e) {
+    showToast('This obligation is no longer fully paid but could not be reopened. It will update next time you\'re online.', { tone: 'error' });
   }
 }
 

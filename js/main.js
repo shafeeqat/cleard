@@ -199,7 +199,8 @@ async function maybeRunMonthlyGeneration() {
   generationRanForMonth = state.currentMonth;
   try {
     const adapter = firestoreGenerationAdapter(state.user.uid);
-    await withTimeout(generateMonthInFirestore(adapter, state.user.uid, state.currentMonth), 15000);
+    const { preferredPaymentDay, preferredPaymentDayOfMonth } = effectiveSettings();
+    await withTimeout(generateMonthInFirestore(adapter, state.user.uid, state.currentMonth, { preferredPaymentDay, preferredPaymentDayOfMonth }), 15000);
   } catch (e) {
     generationRanForMonth = null; // allow retry on next data tick
     showToast("We couldn't prepare this month yet. Pull to refresh or check your connection.", { tone: 'error' });

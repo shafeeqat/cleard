@@ -3,7 +3,7 @@
 // obligation for its display fields, so editing the master later can't
 // rewrite history (§10, §32).
 
-import { dayOfMonthDate, lastWorkingDayOfMonth } from '../utils/dates.js';
+import { dayOfMonthDate, lastWorkingDayOfMonth, addMonths } from '../utils/dates.js';
 
 export const INSTANCE_STATUSES = ['outstanding', 'pending', 'scheduled', 'paid', 'skipped'];
 
@@ -11,10 +11,35 @@ export function instanceId(obligationId, month) {
   return `${obligationId}_${month}`;
 }
 
+// §14: when the user's habit is to pay ahead of the due month using a
+// month-end salary (paymentDatePreference 'lastWorkingDay'), the intended
+// payment date is the last working day of the month BEFORE this instance's
+// month — e.g. paying September's obligations at the end of August — not
+// the last working day of the same month. 'dayOfMonth' (e.g. "1st of the
+// month") stays anchored to the instance's own month, since that's a
+// same-month payment habit, not a pay-ahead one. A 'global' preference
+// resolves against the caller-supplied user defaults instead of the
+// obligation's own (absent) override.
+function resolveIntendedPaymentDate(obligation, month, settingsDefaults) {
+  const preference = obligation.paymentDatePreference === 'global'
+    ? (settingsDefaults.preferredPaymentDay || 'lastWorkingDay')
+    : obligation.paymentDatePreference;
+  const dayOfMonth = obligation.paymentDatePreference === 'global'
+    ? settingsDefaults.preferredPaymentDayOfMonth
+    : obligation.paymentDayOfMonth;
+
+  if (preference === 'dayOfMonth' && dayOfMonth) return dayOfMonthDate(month, dayOfMonth);
+  if (preference === 'lastWorkingDay') return lastWorkingDayOfMonth(addMonths(month, -1));
+  return null;
+}
+
 // Builds the snapshot document for one obligation's occurrence in `month`.
 // Pure — does not check whether the instance already exists; the generation
 // module (monthlyGeneration.js) is responsible for idempotency.
-export function snapshotInstanceFromObligation(obligation, month, now = new Date()) {
+// `settingsDefaults` is the signed-in user's Settings > Payment preferences
+// ({ preferredPaymentDay, preferredPaymentDayOfMonth }), used only when this
+// obligation itself is set to "use my default preference".
+export function snapshotInstanceFromObligation(obligation, month, settingsDefaults = {}, now = new Date()) {
   // Variable obligations never start "known" — there is no per-obligation
   // stored current amount to fall back on (only an optional typical
   // min/max hint, which §12 explicitly says is never authoritative), so
@@ -30,11 +55,7 @@ export function snapshotInstanceFromObligation(obligation, month, now = new Date
     ? dayOfMonthDate(month, obligation.dueDayOfMonth)
     : null;
 
-  const intendedPaymentDate = obligation.paymentDatePreference === 'dayOfMonth' && obligation.paymentDayOfMonth
-    ? dayOfMonthDate(month, obligation.paymentDayOfMonth)
-    : obligation.paymentDatePreference === 'lastWorkingDay'
-      ? lastWorkingDayOfMonth(month)
-      : null; // 'global' preference resolved by the caller against user settings
+  const intendedPaymentDate = resolveIntendedPaymentDate(obligation, month, settingsDefaults);
 
   const collectionDate = (obligation.collectionDateType === 'fixed' || obligation.collectionDateType === 'approximate') && obligation.collectionDayOfMonth
     ? dayOfMonthDate(month, obligation.collectionDayOfMonth)
@@ -120,4 +141,22 @@ export function applyKnownAmount(instance, amount, now = new Date()) {
 
 export function isCleared(instance) {
   return instance.status === 'paid';
+}
+
+// Reverts a cleared instance back to outstanding (or scheduled, for GIRO) —
+// "I marked this paid by mistake." The known bill amount (amountExpected)
+// is left as-is since that fact doesn't change; amountActual/paidAt are
+// cleared since it's no longer true that anything was actually paid. The
+// caller is responsible for the confirmation prompt and for reopening the
+// master obligation if this was its completing occurrence (see
+// obligations.js#isLifecycleComplete and views/obligationDetail.js).
+export function unpayInstance(instance, now = new Date()) {
+  if (!isCleared(instance)) return instance;
+  return {
+    ...instance,
+    status: instance.paymentMethod === 'giro' && instance.collectionDateType !== 'none' ? 'scheduled' : 'outstanding',
+    amountActual: null,
+    paidAt: null,
+    updatedAt: now.toISOString(),
+  };
 }
